@@ -1,0 +1,70 @@
+@extends('master');
+@section('content')
+      <!--Form Start-->
+            
+      <div class="col-sm-12 col-xl-15">
+        <div class="bg-light rounded h-100 p-4">
+            <h6 class="mb-4">{{$title}}</h6>
+            <form action="{{url('/actor/editActor',$actor[0]->id)}}" method="POST" id="FormLogin">
+                @csrf
+            {{-- <input type="hidden" name="_token" value="{{csrf_token()}}"> --}}
+            <div class="form-floating mb-3">
+                <input type="text" class="form-control" name="full_name" id="floatingInput" value="{{$actor[0]->full_name}}"> 
+                <label for="floatingInput">Tên đầy đủ</label>
+                @error('title')
+                    <span style="color:red;">{{$message}}</span>
+                @enderror
+            </div>
+            
+
+            <div class=" mb-3">
+                <label for="gender">Giới tính :</label>
+               <select name="gender" id="">
+                <option value="1">Nam</option>
+                <option value="0">Nữ</option>
+               </select>            
+            </div>
+
+            <div class="mb-3">
+                <label for="birthday">Ngày sinh :</label>
+                <input type="date" name="birthday" id="">
+                @error('birthday')
+                <span style="color:red;">{{$message}}</span>
+                @enderror
+            </div>
+            
+            <div class="mb-3">
+                <label for="image">Image :</label>
+                <input type="file" name="image" id="">
+                @error('Image')
+                <span style="color:red;">{{$message}}</span>
+                @enderror
+            </div>
+
+            <div class="form-floating mb-3">
+                <select class="form-select" id="list-country" name="nationality"
+                    aria-label="Floating label select example">
+                </select>
+                <label for="floatingSelect">Quốc tịch</label>
+            </div>            
+            <div class="form-floating mb-3">
+                <textarea class="form-control" name="story" placeholder="Leave a comment here"
+                    id="floatingTextarea" style="height: 150px;">{{$actor[0]->story}}</textarea>
+                <label for="floatingTextarea">Tiểu sử</label>
+                @error('story')
+                <span style="color:red;">{{$message}}</span>
+                @enderror
+            </div>
+            <button type="submit" class="btn btn-primary py-3 w-100 mb-4">Cập nhật diễn viên</button>                     
+        </form>
+
+        </div>
+    </div>
+@stop
+@section('navbar')
+    <a href="#" class="nav-item nav-link"><i class="fa fa-tachometer-alt me-2"></i>Trang chủ</a>                   
+    <a href="/movie/list" class="nav-item nav-link"><i class="fa fa-film me-2"></i>Phim</a>
+    <a href="/actor/list" class="nav-item nav-link active"><i class="fa-sharp fa-solid fa-user-secret fa me-2"></i>Diễn viên</a>
+    <a href="/user/list" class="nav-item nav-link"><i class="fa fa-user me-2"></i>Người dùng</a>
+    <a href="#" class="nav-item nav-link"><i class="fa fa-chart-bar me-2"></i>Charts</a>
+@stop
