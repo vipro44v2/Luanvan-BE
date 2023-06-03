@@ -76,6 +76,9 @@
                 </select>
                 <label for="floatingSelect">Trạng thái</label>
             </div>
+            <div class="form-floating mb-3">
+                
+            </div>
             <button type="submit" class="btn btn-primary py-3 w-100 mb-4">Thêm phim</button>                     
         </form>
 

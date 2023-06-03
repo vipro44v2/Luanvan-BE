@@ -17,7 +17,6 @@ class MovieController extends BaseController
         $title='Thêm phim';
         $actor=ActorsModel::getAllActors();
         return view('Movie.addMovie',compact('actor','title'));
-
     }
     public function addMovie(Request $request){
 
