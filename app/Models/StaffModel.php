@@ -6,6 +6,7 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Tymon\JWTAuth\Contracts\JWTSubject;
+use Illuminate\Support\Facades\DB;
  
 class StaffModel extends Authenticatable implements JWTSubject
 {
@@ -18,7 +19,7 @@ class StaffModel extends Authenticatable implements JWTSubject
      */
     protected $table="staffs";
     protected $primaryKey="id";
-    protected $fillable=['id','name','email','password','id_card_number','phone_number','img_avatar','created_at','updated_at','staff_status_id'];    
+    protected $fillable=['name','email','username','password','id_card_number','phone_number','img_avatar','created_at','updated_at','staff_status_id'];    
 
  
     /**
@@ -56,5 +57,13 @@ class StaffModel extends Authenticatable implements JWTSubject
      */
     public function getJWTCustomClaims() {
         return [];
+    }
+    public function getRole($staff_id){
+        $role=DB::select('select * from privileges JOIN staff_roles on privileges.staff_role_id=staff_roles.id where staff_id = ?', [$staff_id]);
+        return($role);
+    }
+    public function getAllStaff(){
+        $staff=DB::select('SELECT * FROM staffs JOIN privileges on staffs.id=privileges.staff_id JOIN staff_roles on privileges.staff_role_id=staff_roles.id');
+        return $staff;
     }
 }

@@ -18,7 +18,12 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <link rel="stylesheet" href="{{ asset('css/style.css')}}">
     <link rel="stylesheet" href="{{ asset('css/bootstrap.min.css')}}">
-    <title>Document</title>
+    <script src="https://kit.fontawesome.com/3f035324f9.js" crossorigin="anonymous"></script>
+    <script src="{{asset('ckeditor/ckeditor.js')}}"></script>
+    <script> CKEDITOR.replace('story');
+            CKEDITOR.replace('description');           
+    </script>
+    <title>My cinema</title>
 </head>
 <body>
     <div class="container">
@@ -30,7 +35,7 @@
             </div>
         </div> --}}
         <!-- Spinner End -->
-        <div class="sidebar pe-4 pb-3">
+        <div class="sidebar pe-6 pb-3">
             <nav class="navbar bg-light navbar-light">
                 <a href="index.html" class="navbar-brand mx-4 mb-3">
                     <h3 class="text-primary"><i class="fa fa-hashtag me-2"></i>MY CINEMA</h3>
@@ -38,16 +43,16 @@
                 </a>
                 <div class="d-flex align-items-center ms-4 mb-4">
                     <div class="position-relative">
-                        <img class="rounded-circle" src="{{ asset('image/user.jpg') }}" alt="" style="width: 40px; height: 40px;">
+                        <img class="rounded-circle me-lg-2" src="{{Session::get('staff')['avatar']}}" alt="" style="width: 40px; height: 40px;">
                         <div class="bg-success rounded-circle border border-2 border-white position-absolute end-0 bottom-0 p-1"></div>
                     </div>
                     <div class="ms-3">
-                        <h6 class="mb-0">{{Session::get('name')}}</h6>
-                        <span>Admin</span>
+                        <h6 class="mb-0">{{Session::get('staff')['name']}}</h6>
+                        <span>{{Session::get('staff')['role']}}</span>
                     </div>
                 </div>
-                <div class="navbar-nav w-100">
-                    @yield('navbar');
+                <div class="navbar-nav w-100" id="nav-bar">
+                    @yield('navbar')
                 </div>                 
             </nav>
         </div>
@@ -58,23 +63,17 @@
                 <a href="index.html" class="navbar-brand d-flex d-lg-none me-4">
                     <h2 class="text-primary mb-0"><i class="fa fa-hashtag"></i></h2>
                 </a>
-                <a href="#" class="sidebar-toggler flex-shrink-0">
-                    <i class="fa fa-bars"></i>
-                </a>
-                <form class="d-none d-md-flex ms-4">
-                    <input class="form-control border-0" type="search" placeholder="Search">
-                </form>
+                
+                
                 <div class="navbar-nav align-items-center ms-auto">  
-                    @if(Session::get('name'))
+                    @if(Session::get('staff'))
                     <div class="nav-item dropdown">
                         <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
-                            <img class="rounded-circle me-lg-2" src="{{ asset('image/user.jpg') }}" alt="" style="width: 40px; height: 40px;">
-                            <span class="d-none d-lg-inline-flex">Vi</span>
+                            <img class="rounded-circle me-lg-2" src="{{Session::get('staff')['avatar']}}" alt="" style="width: 40px; height: 40px;">
                         </a>
-                        <div class="dropdown-menu dropdown-menu-end bg-light border-0 rounded-0 rounded-bottom m-0">
-                            <a href="#" class="dropdown-item">My Profile</a>
-                            <a href="#" class="dropdown-item">Settings</a>
-                            <a href="/logout" class="dropdown-item">Log Out</a>
+                        <div class="dropdown-menu dropdown-menu-end .bg-secondary.bg-gradient border-0 rounded-0 rounded-bottom m-0">
+                            <a href="/info/getinfo/{{Session::get('staff')['id']}}" class="dropdown-item">Thông tin bản thân</a>
+                            <a href="/logout" class="dropdown-item">Đăng xuất</a>
                         </div>
                     </div>
                     @endif
@@ -82,8 +81,7 @@
             </nav>
             <!-- Navbar End -->         
             @yield('content')
-
-            <!-- Footer Start -->
+            {{-- <!-- Footer Start -->
             <div class="container-fluid pt-4 px-4">
                 <div class="bg-light rounded-top p-4">
                     <div class="row">
@@ -97,68 +95,31 @@
                     </div>
                 </div>
             </div>
-            <!-- Footer End -->
+            <!-- Footer End --> --}}
         </div>
         <!-- Content End -->
     </div>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
    
     <script>
-        url='http://localhost:8000/';
-        console.log(url)
-        $.get(url+'api/user/getall',function(res){
+        url='http://localhost:8000/';    
+        $.get(url+'api/theater/getall',function(res){
             if(res.status_code===200){
-                let user=res.data
-                let list=''
-                user.forEach(function(item) {
-                    list+=' <tr><th scope="row">'+item.id+'</th> <td>'+item.name+'</td><td>'+item.email+'</td><td>'+item.id_card_number+'</td> <td>'+item.phone_number+'</td><td>'+item.created_at+'</td></tr>'
+                let theater=res.data;
+                let list =''
+                theater.forEach(function(item){
+                    $('#nav-bar').append('<div class="nav-item dropdown"><a href="#" class="nav-link dropdown-toggle" id="theater'+item.id+'" data-bs-toggle="dropdown"><i class="far fa-file-alt me-2"></i>'+item.theater_name+'</a><div class="dropdown-menu navbar-menu bg-transparent border-0"><a href="/room/list/'+item.id+'" class="nav-item nav-link">Phòng chiếu</a><a href="/calendar/list/'+item.id+'" class="nav-item nav-link"></i>Lịch chiếu</a></a><a href="/bill/list/'+item.id+'" class="nav-item nav-link"></i>Danh sách hoá đơn</a></a><a href="/ticket/buyTicket/'+item.id+'" class="nav-item nav-link"></i>Bán vé</a></div></div>')
                 });
-                $('#list_user').html(list)
-            }
-        })
-      
-        $.get(url+'api/country/getall',function(res){
-            if(res.status_code===200){
-                let country=res.data
-                let list=''
-                country.forEach(function(item) {
-                    list+='<option value="'+item.id+'">'+item.country_name+'</option>'
-                });
-                $('#list-country').html(list)
-            }
-        })
-        $.get(url+'api/country/getall',function(res){
-            if(res.status_code===200){
-                let country=res.data
-                let list=''
-                country.forEach(function(item) {
-                    list+='<option value="'+item.id+'">'+item.country_name+'</option>'
-                });
-                $('#list-country').html(list)
-            }
-        })
-        $.get(url+'api/director/getall',function(res){
-            if(res.status_code===200){
-                let director=res.data
-                let list=''
-                director.forEach(function(item) {
-                    list+='<option value="'+item.id+'">'+item.name+'</option>'
-                });
-                $('#list-director').html(list)
-            }
-        })
-        $.get(url+'api/movieStatus/getall',function(res){
-            if(res.status_code===200){
-                let stt=res.data
-                let list=''
-                stt.forEach(function(item) {
-                    list+='<option value="'+item.id+'">'+item.status+'</option>'
-                });
-                $('#list-status').html(list)
-            }
-        })
+                var theaterActive='theater'+document.getElementById("theater").value;
+                var element=document.getElementById(theaterActive);
+                element.classList.add("active");
+            }}
+            )     
+        
+          
     </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 </body>
+
 
 </html>

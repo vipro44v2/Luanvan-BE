@@ -275,3 +275,36 @@
     background: var(--dark);
     border-color: var(--primary);
 }
+.room{
+    display: flex;
+    flex-wrap: wrap;
+    margin: auto;
+    width: 70%;
+}
+.seat{
+    width: 10%;
+    text-align: center;
+    margin: 10px 3%;
+    border: 1px solid #ccc;
+    background-color: #DBDEE1;
+    /* #EE1C01 */
+}
+.seat p{
+    margin:0;
+}
+.seat_is_choose{
+    background-color: green;
+    color: #FFF;
+}
+.quantity input{
+    width: 50px;
+    height: 30px;
+}
+.quantity{
+    display: flex;
+    margin-left: 350px;
+}
+.quantity p{
+    width: 100px;
+}
+

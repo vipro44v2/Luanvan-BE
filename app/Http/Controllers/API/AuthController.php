@@ -120,7 +120,10 @@ class AuthController extends BaseController
     public function changePassWord(Request $request) {
         $validator = Validator::make($request->all(), [
             'old_password' => 'required|string|min:6',
-            'new_password' => 'required|string|confirmed|min:6',
+            'new_password' => 'required|string|min:6',
+            'password_confirmation'=>'same:new_password'
+        ],[
+            'password_confirmation.same'=>'Nhập lại mật khẩu không trùng với mật khẩu'
         ]);
  
         if($validator->fails()){
@@ -136,5 +139,25 @@ class AuthController extends BaseController
             'message' => 'User successfully changed password',
             'user' => $user,
         ], 201);
+    }
+
+    public function updateProfile(Request $request,$id){
+        var_dump($id);
+        $user = User::find($id);
+        //dd($request);
+        if($user){
+            //var_dump($request->name);
+            $user->name = $request->name;
+            $user->email = $request->email;
+            $user->id_card_number = $request->id_card_number;
+            $user->phone_number = $request->phone_number;
+            $user->save();
+
+            return response()->json([
+                'message' => 'User successfully update profile',
+                'user' => $user,
+            ], 201);
+        }
+
     }
 }

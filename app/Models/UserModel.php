@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Tymon\JWTAuth\Contracts\JWTSubject;
-
+use Illuminate\Support\Facades\DB;
 
 class UserModel extends Model
 {
@@ -19,6 +19,9 @@ class UserModel extends Model
     public function getJWTCustomClaims() {
         return [];
     }
-
+    public function getUserById($id){
+        $user=DB::select('select * from users where id = ?', [$id]);
+        return $user;
+    }
 }
 

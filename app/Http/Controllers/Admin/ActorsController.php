@@ -7,6 +7,9 @@ use Illuminate\Routing\Controller as BaseController;
 Use App\Models\ActorsModel;
 Use App\Models\CountryModel;
 use Illuminate\Http\Request;
+use Cloudinary\Cloudinary;
+use Cloudinary\Transformation\Resize;
+
 
 class ActorsController extends BaseController
 {
@@ -23,8 +26,12 @@ class ActorsController extends BaseController
             }
             return view("Actor.listActor",compact('title',"actors"));
     }
+    public function addActorForm(){
+        $nationality=CountryModel::all();
+        return view("Actor.addActor",compact("nationality"));
+    }
     public function addActor(Request $request){
-        if($request->method('POST')){  
+        if($request->method('POST')){ 
             $request->validate([
                 'full_name'=>'required',
                 'story'=>'required|min:50',
@@ -38,13 +45,28 @@ class ActorsController extends BaseController
                 'image.required'=>"Chưa chọn ảnh diễn viên"
             ] 
             );
+            $cloudinary = new Cloudinary(
+                [
+                    'cloud' => [
+                        'cloud_name' => 'doax8x0n9',
+                        'api_key'    => '813244531242642',
+                        'api_secret' => 'NpVe1HTWXm--JHJ4j-zrCvu4qKk',
+                    ],
+                ]
+            ); 
+            $file=$request->file('image')->getClientOriginalName();
+            $fileName = pathinfo($file,PATHINFO_FILENAME);
+            $cloudinary->uploadApi()->upload(
+                $request->file('image')->getRealPath(),
+                ['public_id' => $fileName]
+            );
             $actors=ActorsModel::create([
                 'full_name'=>$request->input('full_name'),
                 'gender'=>$request->input('gender'),
                 'birthday'=>$request->input('birthday'),
                 'story'=>$request->input('story'),
                 'nationality'=>$request->input('nationality'),
-                'image'=>$request->input('image')
+                'image'=>$cloudinary->image($fileName)->resize(Resize::fill(450,300 ))->toUrl()
             ]);
             return redirect('/actor/list');
         }       
@@ -57,7 +79,8 @@ class ActorsController extends BaseController
     public function editActorForm($id=0){
         $title="Cập nhật diễn viên";
         $actor=ActorsModel::getActorById($id);
-        return view("Actor.editActor",compact('title',"actor"));
+        $nationality=CountryModel::all();
+        return view("Actor.editActor",compact('title',"actor","nationality"));
     }
     public function editActor(Request $request,$id){
         if($request->method('POST')){  
@@ -65,13 +88,11 @@ class ActorsController extends BaseController
                 'full_name'=>'required',
                 'story'=>'required|min:50',
                 'birthday'=>'required',
-                'image'=>'required',
             ],[
                 'full_name.required'=>'Tên diễn viên không được trống',
                 'story.required'=>'Tiểu sử không được trống',
                 'story.min'=>"tiểu sử phải trên :min kí tự",
                 'birthday.required'=>"Chưa nhập ngày sinh",
-                'image.required'=>"Chưa chọn ảnh diễn viên"
             ] 
             );
             $actor = ActorsModel::find($id);
@@ -80,7 +101,24 @@ class ActorsController extends BaseController
             $actor->gender=$request->input('gender');
             $actor->nationality=$request->input('nationality');
             $actor->story=$request->input('story');
-            $actor->image=$request->input('image');
+            if($request->file('image')){
+                $file=$request->file('image')->getClientOriginalName();
+                $fileName = pathinfo($file,PATHINFO_FILENAME);
+                $cloudinary = new Cloudinary(
+                    [
+                        'cloud' => [
+                            'cloud_name' => 'doax8x0n9',
+                            'api_key'    => '813244531242642',
+                            'api_secret' => 'NpVe1HTWXm--JHJ4j-zrCvu4qKk',
+                        ],
+                    ]
+                ); 
+                $cloudinary->uploadApi()->upload(
+                    $request->file('image')->getRealPath(),
+                    ['public_id' => $fileName]
+                );
+                $actor->image=$cloudinary->image($fileName)->resize(Resize::fill(450,300 ))->toUrl();
+            }
             $actor->save();
             return redirect('/actor/list');
         }

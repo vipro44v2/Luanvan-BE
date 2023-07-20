@@ -2,16 +2,18 @@
 
 namespace App\Http\Controllers;
 require_once('../vendor/autoload.php');
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Illuminate\Foundation\Validation\ValidatesRequests;
+use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Http\Request;
 
 use Cloudinary\Cloudinary;
 use Cloudinary\Transformation\Resize;
 
 
-class CloudinaryController extends Controller
+class CloudinaryController extends BaseController
 {
-    function getImage(Request $request){
-    if($request->method('POST')){  
+    function getImage(Request $request){ 
     $cloudinary = new Cloudinary(
         [
             'cloud' => [
@@ -25,8 +27,11 @@ class CloudinaryController extends Controller
         $request->file('poster'),
         ['public_id' => $request->input('poster')]
     );
-    echo $request->file('poster');
-    }
+    $cloudinary->uploadApi()->upload(
+        'https://upload.wikimedia.org/wikipedia/commons/a/ae/Olympic_flag.jpg',
+        ['public_id' => 'olympic_flag']
+    );
+    echo $request->file('poster');    
 }
    
 }

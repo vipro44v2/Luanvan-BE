@@ -3,9 +3,9 @@
       <!--Form Start-->
             
       <div class="col-sm-12 col-xl-15">
-        <div class="bg-light rounded h-100 p-4">
+        <div class=".bg-secondary.bg-gradient rounded h-100 p-4">
             <h6 class="mb-4">Thêm diễn viên</h6>
-            <form action="/actor/addActor" method="POST" id="FormLogin">
+            <form action="/actor/addActor" method="POST" enctype="multipart/form-data">
                 @csrf
             {{-- <input type="hidden" name="_token" value="{{csrf_token()}}"> --}}
             <div class="form-floating mb-3">
@@ -44,12 +44,15 @@
             <div class="form-floating mb-3">
                 <select class="form-select" id="list-country" name="nationality"
                     aria-label="Floating label select example">
+                    @forEach($nationality as $item)
+                    <option value="{{$item->id}}">{{$item->country_name}}</option>
+                    @endforEach
                 </select>
                 <label for="floatingSelect">Quốc tịch</label>
             </div>            
             <div class="form-floating mb-3">
                 <textarea class="form-control" name="story" placeholder="Leave a comment here"
-                    id="floatingTextarea" style="height: 150px;"></textarea>
+                    id="story" style="height: 150px;"></textarea>
                 <label for="floatingTextarea">Tiểu sử</label>
                 @error('story')
                 <span style="color:red;">{{$message}}</span>
@@ -62,9 +65,13 @@
     </div>
 @stop
 @section('navbar')
-    <a href="#" class="nav-item nav-link"><i class="fa fa-tachometer-alt me-2"></i>Trang chủ</a>                   
+    <a href="/home" class="nav-item nav-link"><i class="fa fa-tachometer-alt me-2"></i>Trang chủ</a>                   
+    @if(Session::get('staff')['role_id']==1||Session::get('staff')['role_id']==0)
     <a href="/movie/list" class="nav-item nav-link"><i class="fa fa-film me-2"></i>Phim</a>
     <a href="/actor/list" class="nav-item nav-link active"><i class="fa-sharp fa-solid fa-user-secret fa me-2"></i>Diễn viên</a>
-    <a href="/user/list" class="nav-item nav-link"><i class="fa fa-user me-2"></i>Người dùng</a>
-    <a href="#" class="nav-item nav-link"><i class="fa fa-chart-bar me-2"></i>Charts</a>
+    <a href="/director/list" class="nav-item nav-link"><i class="fa fa-sharp fa-solid fa-user-secret me-2"></i>Đạo diễn</a>
+    @if(Session::get('staff')['role_id']==0)
+    <a href="/staff/list" class="nav-item nav-link"><i class="fa fa-user me-2"></i>Nhân viên</a> 
+    @endif 
+    @endif 
 @stop

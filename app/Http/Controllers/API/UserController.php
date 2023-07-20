@@ -90,6 +90,24 @@ class UserController extends BaseController
             'user' =>auth('api')->user()
         ]);
     }
-
+    public function getUserById($id){
+        $user = UserModel::getUserById($id);
+        if($user)
+        {
+            return response()->json([
+            'data'=>$user,
+            'status_code'=>200,
+            'message'=>'done'
+            ]);
+        }
+        else
+        {
+            return response()->json([
+                'data'=>null,
+                'status_code'=>404,
+                'message'=>'error'
+            ]);
+        }
+    }
  
 }

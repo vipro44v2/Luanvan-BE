@@ -100,5 +100,58 @@ class MovieController extends BaseController
         ]);
     }
    }
+    public function getActorByMovieId($id)
+    {
+        $actors = MovieModel::getActorByMovieId($id);
+        if ($actors) {
+            return response()->json([
+                'data' => $actors,
+                'status_code' => 200,
+                'message' => 'done'
+            ]);
+        } else {
+            return response()->json([
+                'data' => null,
+                'status_code' => 404,
+                'message' => 'error'
+            ]);
+        }
+    }
+    public function getGenreByMovieId($id)
+    {
+        $actors = MovieModel::getGenreByMovieId($id);
+        if ($actors) {
+            return response()->json([
+                'data' => $actors,
+                'status_code' => 200,
+                'message' => 'done'
+            ]);
+        } else {
+            return response()->json([
+                'data' => null,
+                'status_code' => 404,
+                'message' => 'error'
+            ]);
+        }
+    }
+    public function search($keyword){
+        $movie=MovieModel::searchMovie($keyword);
+        if($movie)
+        {
+            return response()->json([
+            'data'=>$movie,
+            'status_code'=>200,
+            'message'=>'done'
+            ]);
+        }
+        else
+        {
+            return response()->json([
+                'data'=>null,
+                'status_code'=>404,
+                'message'=>'error'
+            ]);
+        }
+    }
 
 }

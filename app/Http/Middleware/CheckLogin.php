@@ -17,11 +17,10 @@ class CheckLogin
      */
     public function handle(Request $request, Closure $next)
     {
-        if(Session::has('name')){
+        if(Session::has('staff')){
         return $next($request);
         }
         else{
-            echo"<script>alert('Đăng nhập thất bại')</script>";
             return redirect('/');
         }
     }
